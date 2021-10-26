@@ -7,11 +7,11 @@ const pool = new Pool({
   port: process.env.PGPORT
 });
 
-module.exports.getChatList = () => {
+module.exports.getChatList = (userId) => {
   pool
     .connect()
     .then((client) => {
-      return client.query(`SELECT * FROM chatlist WHERE uid1=${userId} OR uid2=${userId}`);
+      return client.query('SELECT * FROM chatlist WHERE uid1=$1 OR uid2=$1', [userId]);
     })
     .catch((err) => {
       console.log(err);
