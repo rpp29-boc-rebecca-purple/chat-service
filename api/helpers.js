@@ -1,7 +1,13 @@
-// Put any helpers you might need in your controllers here
+const multer = require('multer');
 
 module.exports = {
-  helper1: () => {
-    return 1;
+
+  storage: multer.memoryStorage(),
+  filefilter: (req, file, cb) => {
+    if (file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+      cb(null, true);
+    } else {
+      cb(null, false);
+    }
   }
 };
