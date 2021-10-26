@@ -3,13 +3,6 @@ const helpers = require('./helpers');
 const multer = require('multer');
 const Aws = require('aws-sdk');
 
-const upload = multer({ storage: helpers.storage, fileFilter: helpers.filefilter });
-
-const s3 = new Aws.S3({
-  accessKeyId: process.env.AWSKEY,
-  secretAccessKey: process.env.AWSSECRET
-});
-
 module.exports = {
   getChatlist: (req, res) => {
     res.send(200);
@@ -32,7 +25,6 @@ module.exports = {
       accessKeyId: process.env.AWSKEY,
       secretAccessKey: process.env.AWSSECRET
     });
-
     const params = {
       Bucket: process.env.AWSBUCKET,
       Key: req.file.originalname,
@@ -40,7 +32,6 @@ module.exports = {
       ACL: 'public-read-write',
       ContentType: 'image/jpeg'
     };
-
     s3.upload(params, (err, data) => {
       if (err) {
         console.log(err);

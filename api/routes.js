@@ -4,7 +4,13 @@ const auth = require('./middleware').auth;
 const helpers = require('./helpers');
 const multer = require('multer');
 
-const upload = multer({ storage: helpers.storage, fileFilter: helpers.filefilter });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: helpers.filefilter,
+  limits: {
+    fileSize: 8000000
+  }
+});
 
 router.get('/chatlist', auth, controllers.getChatlist);
 // router.get('/conversation', auth, controllers.getConversation);
