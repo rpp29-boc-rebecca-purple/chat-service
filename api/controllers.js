@@ -21,6 +21,7 @@ module.exports = {
   },
 
   postAddPhoto: (req, res) => {
+    console.log(req);
     const s3 = new Aws.S3({
       accessKeyId: process.env.AWSKEY,
       secretAccessKey: process.env.AWSSECRET
