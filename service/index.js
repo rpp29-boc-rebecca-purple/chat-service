@@ -14,12 +14,12 @@ module.exports.getChatList = (userId) => {
       console.log('what the fuck', userId);
       const query = 'SELECT * FROM chatlist WHERE uid1=$1 OR uid2=$1;';
       const values = [userId];
-      return client.query(query, values);
       client.release();
+      return client.query(query, values);
     })
     .catch((err) => {
-      return null;
       client.release();
+      return null;
     });
 };
 
@@ -29,12 +29,12 @@ module.exports.getConversation = (chatId) => {
     .then((client) => {
       const query = 'SELECT * FROM conversation WHERE chatId=$1;';
       const values = [chatId];
-      return client.query(query, values);
       client.release();
+      return client.query(query, values);
     })
     .catch((err) => {
-      return null;
       client.release();
+      return null;
     });
 };
 
