@@ -5,6 +5,7 @@ CREATE TABLE chatlist(
   chatId INT NOT NULL,
   uid1 INT NOT NULL,
   uid2 INT NOT NULL,
+  unreadSenderId INT NOT NULL,
   unread INT,
   time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -16,11 +17,11 @@ CSV HEADER;
 
 CREATE TABLE conversation(
   chatId INT NOT NULL,
-  messageId INT NOT NULL,
+  messageId SERIAL,
   senderId INT NOT NULL,
   body VARCHAR,
   photoUrl VARCHAR,
-  read BOOLEAN,
+  read BOOLEAN DEFAULT 'f',
   time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

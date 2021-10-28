@@ -18,7 +18,7 @@ router.get('/conversation', controllers.getConversation);
 
 router.post('/addPhoto', upload.single('photo'), controllers.postAddPhoto);
 // router.post('/addMessage', auth, controllers.setExample);
-// router.post('/newChat', auth, controllers.setExample);
+router.post('/newConversation', upload.single('photo'), controllers.postNewConversation);
 
 // router.put('/readMessage', auth, controllers.putReadMessages);
 

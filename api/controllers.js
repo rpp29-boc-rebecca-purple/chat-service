@@ -52,7 +52,19 @@ module.exports = {
   },
 
   postNewConversation: (req, res) => {
-    res.send(200);
+    db.createNewConversation(req.query)
+      .then((response) => {
+        if (!response || response.rowCount === 0) {
+          res.status(400).send('UNABLE TO CREATE NEW CONVERSATION');
+          return;
+        } else {
+          res.status(200).send(response.rows);
+        }
+      })
+      .catch((err) => {
+        res.status(400).send('UNABLE TO GET CHAT LIST - try again later');
+      });
+
   },
 
   postNewMessage: (req, res) => {

@@ -33,13 +33,50 @@ module.exports.getConversation = (chatId) => {
       return client.query(query, values);
     })
     .catch((err) => {
-      client.release();
       return null;
     });
 };
 
 module.exports.uploadPhoto = () => {
 
+};
+
+module.exports.createNewConversation = (data) => {
+  let newPhoto, newBody;
+  let newChatId = `${data.userId1}${data.userId2}`;
+  newChatId = Number(newChatId);
+  data.photo ? newPhoto = data.photo : newPhoto = null;
+  data.newBody ? newBody = data.body : newBody = null;
+  console.log('here', newChatId);
+
+  return pool
+    .connect()
+    .then((client) => {
+      console.log('how');
+      const query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread) VALUES ($1, $2, $3, $4)';
+      const values = [newChatId, data.userId1, data.userId2, 1];
+      return client.query(query, values)
+        .then((response) => {
+          console.log('what in the');
+          const query = 'INSERT INTO conversation(chatId, senderId, body, photoUrl) VALUES ($1, $2, $3, $4)';
+          const values = [newChatId, data.userId1, newBody, data.photo];
+          client.query(query, values);
+        })
+        .then((response) => {
+          console.log('hell');
+          const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+          const values = [newChatId];
+          return client.query(query, values);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+
+    .catch((err) => {
+      console.log(err);
+      return null;
+    });
 };
 
 module.exports.addMessage = () => {
