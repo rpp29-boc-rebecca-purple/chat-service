@@ -12,8 +12,8 @@ const upload = multer({
   }
 });
 
-router.get('/chatlist', auth, controllers.getChatlist);
-// router.get('/conversation', auth, controllers.getConversation);
+router.get('/chatlist', controllers.getChatlist);
+router.get('/conversation', controllers.getConversation);
 // router.get('/example', auth, controllers.getExample);
 
 router.post('/addPhoto', upload.single('photo'), controllers.postAddPhoto);
