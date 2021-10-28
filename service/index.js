@@ -8,19 +8,34 @@ const pool = new Pool({
 });
 
 module.exports.getChatList = (userId) => {
-  pool
+  return pool
     .connect()
     .then((client) => {
-      return client.query('SELECT * FROM chatlist WHERE uid1=$1 OR uid2=$1', [userId]);
+      console.log('what the fuck', userId);
+      const query = 'SELECT * FROM chatlist WHERE uid1=$1 OR uid2=$1;';
+      const values = [userId];
+      return client.query(query, values);
+      client.release();
     })
     .catch((err) => {
-      console.log(err);
+      return null;
+      client.release();
     });
-
 };
 
-module.exports.getConversation = () => {
-
+module.exports.getConversation = (chatId) => {
+  return pool
+    .connect()
+    .then((client) => {
+      const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+      const values = [chatId];
+      return client.query(query, values);
+      client.release();
+    })
+    .catch((err) => {
+      return null;
+      client.release();
+    });
 };
 
 module.exports.uploadPhoto = () => {
