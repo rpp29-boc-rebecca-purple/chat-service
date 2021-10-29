@@ -2,12 +2,6 @@ const app = require('./server/server.js');
 const supertest = require('supertest');
 const request = supertest(app);
 
-// describe ('testing JEST setup', () => {
-//   it('should add 2 and 2', async () => {
-//     expect(2 + 2).toBe(4);
-//   });
-// });
-
 describe ('GET /conversation', () => {
 
   it('should respond with conversation data for valid chatId', async () => {
@@ -72,16 +66,16 @@ describe ('GET /chatlist', () => {
 //     console.log(result);
 //   });
 
-  // it('should respond with conversation data for existing conversations', async () => {
-  //   const response = await request.post('/new-conversation');
-  //   expect(response.status).toBe(400);
-  //   expect(Array.isArray(response.body)).toBe(false);
-  // });
+// it('should respond with conversation data for existing conversations', async () => {
+//   const response = await request.post('/new-conversation');
+//   expect(response.status).toBe(400);
+//   expect(Array.isArray(response.body)).toBe(false);
+// });
 
-  // it('should respond with a 400 status code for a missing body parameters', async () => {
-  //   const response = await request.post('/new-conversation');
-  //   expect(response.status).toBe(400);
-  //   expect(response.text).toBe('QUERY PARAM "userId" IS REQUIRED');
-  // });
+// it('should respond with a 400 status code for a missing body parameters', async () => {
+//   const response = await request.post('/new-conversation');
+//   expect(response.status).toBe(400);
+//   expect(response.text).toBe('QUERY PARAM "userId" IS REQUIRED');
+// });
 
 // });

@@ -26,49 +26,39 @@ module.exports.getConversation = (chatId) => {
     });
 };
 
-module.exports.uploadPhoto = () => {
+module.exports.addPhoto = () => {
 
 };
 
 module.exports.createNewConversation = (data) => {
-  console.log('HERE FOR BODY', data);
   let newPhoto, newBody;
   let newChatId = `${data.senderId}${data.userId2}`;
   newChatId = Number(newChatId);
   data.photo ? newPhoto = data.photo : newPhoto = null;
   data.body ? newBody = data.body : newBody = null;
 
-  return pool
-    .connect()
-    .then((client) => {
-      const query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread) VALUES ($1, $2, $3, $4)';
-      const values = [newChatId, data.senderId, data.userId2, 1];
-      return client.query(query, values)
-        .then((response) => {
-          const query = 'INSERT INTO conversation(chatId, senderId, body, photoUrl) VALUES ($1, $2, $3, $4)';
-          const values = [newChatId, data.senderId, newBody, data.photo];
-          return client.query(query, values);
-        })
-        .then((response) => {
-          const query = 'SELECT * FROM conversation WHERE chatId=$1;';
-          const values = [newChatId];
-          return client.query(query, values);
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.detail && err.detail.includes('already exists')) {
-            const query = 'SELECT * FROM conversation WHERE chatId=$1;';
-            const values = [newChatId];
-            return client.query(query, values);
-          } else {
-            return null;
-          }
-        });
+  const query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread) VALUES ($1, $2, $3, $4)';
+  const values = [newChatId, data.senderId, data.userId2, 1];
+  return pool.query(query, values)
+    .then((response) => {
+      const query = 'INSERT INTO conversation(chatId, senderId, body, photoUrl) VALUES ($1, $2, $3, $4)';
+      const values = [newChatId, data.senderId, newBody, data.photo];
+      return pool.query(query, values);
     })
-
+    .then((response) => {
+      const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+      const values = [newChatId];
+      return pool.query(query, values);
+    })
     .catch((err) => {
-      console.log(err);
-      return null;
+      // console.log(err);
+      if (err.detail && err.detail.includes('already exists')) {
+        const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+        const values = [newChatId];
+        return pool.query(query, values);
+      } else {
+        return null;
+      }
     });
 };
 

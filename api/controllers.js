@@ -72,25 +72,14 @@ module.exports = {
     res.send(200);
   },
 
-  postAddPhoto: (req, res) => {
-    const s3 = new Aws.S3({
-      accessKeyId: process.env.AWSKEY,
-      secretAccessKey: process.env.AWSSECRET
-    });
-    const params = {
-      Bucket: process.env.AWSBUCKET,
-      Key: req.file.originalname,
-      Body: req.file.buffer,
-      ACL: 'public-read-write',
-      ContentType: 'image/jpeg'
-    };
-    s3.upload(params, (err, data) => {
-      if (err) {
-        console.log(err);
-        res.status(400).send('error storing image');
-      }
-      res.status(201).send(data);
-    });
+  postNewPhoto: (req, res) => {
+    return helpers.storePhoto(req)
+      .then((photoData) => {
+        res.status(201).send(photoData.Location);
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
   }
 };
 

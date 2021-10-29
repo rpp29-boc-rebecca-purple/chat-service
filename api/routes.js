@@ -16,7 +16,7 @@ router.get('/chatlist', controllers.getChatlist);
 router.get('/conversation', controllers.getConversation);
 // router.get('/example', auth, controllers.getExample);
 
-router.post('/addPhoto', upload.single('photo'), controllers.postAddPhoto);
+router.post('/add-photo', upload.single('photo'), controllers.postNewPhoto);
 // router.post('/addMessage', auth, controllers.setExample);
 router.post('/new-conversation', upload.single('photo'), controllers.postNewConversation);
 
