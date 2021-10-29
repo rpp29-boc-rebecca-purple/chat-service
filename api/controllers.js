@@ -39,7 +39,7 @@ module.exports = {
       })
       .catch((err) => {
         // console.log('GET CONVERSATION ERR', err);
-        res.status(400).send('UNABLE TO GET CHAT LIST - try again later');
+        res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
       });
   },
 
@@ -47,7 +47,7 @@ module.exports = {
     res.send(200);
   },
 
-  putDeletePhoto: (req, res) => {
+  deletePhoto: (req, res) => {
     res.send(200);
   },
 
@@ -55,6 +55,7 @@ module.exports = {
     db.createNewConversation(req.query)
       .then((response) => {
         if (!response || response.rowCount === 0) {
+          console.log(response);
           res.status(400).send('UNABLE TO CREATE NEW CONVERSATION');
           return;
         } else {
@@ -62,7 +63,7 @@ module.exports = {
         }
       })
       .catch((err) => {
-        res.status(400).send('UNABLE TO GET CHAT LIST - try again later');
+        res.status(400).send('UNABLE TO CREATE NEW CONVERSATION  - try again later');
       });
 
   },
@@ -72,7 +73,6 @@ module.exports = {
   },
 
   postAddPhoto: (req, res) => {
-    console.log(req);
     const s3 = new Aws.S3({
       accessKeyId: process.env.AWSKEY,
       secretAccessKey: process.env.AWSSECRET

@@ -8,15 +8,9 @@ const pool = new Pool({
 });
 
 module.exports.getChatList = (userId) => {
-  return pool
-    .connect()
-    .then((client) => {
-      console.log('what the fuck', userId);
-      const query = 'SELECT * FROM chatlist WHERE uid1=$1 OR uid2=$1;';
-      const values = [userId];
-      client.release();
-      return client.query(query, values);
-    })
+  const query = 'SELECT * FROM chatlist WHERE uid1=$1 OR uid2=$1;';
+  const values = [userId];
+  return pool.query(query, values)
     .catch((err) => {
       client.release();
       return null;
@@ -24,14 +18,9 @@ module.exports.getChatList = (userId) => {
 };
 
 module.exports.getConversation = (chatId) => {
-  return pool
-    .connect()
-    .then((client) => {
-      const query = 'SELECT * FROM conversation WHERE chatId=$1;';
-      const values = [chatId];
-      client.release();
-      return client.query(query, values);
-    })
+  const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+  const values = [chatId];
+  return pool.query(query, values)
     .catch((err) => {
       return null;
     });
@@ -42,34 +31,38 @@ module.exports.uploadPhoto = () => {
 };
 
 module.exports.createNewConversation = (data) => {
+  console.log('HERE FOR BODY', data);
   let newPhoto, newBody;
-  let newChatId = `${data.userId1}${data.userId2}`;
+  let newChatId = `${data.senderId}${data.userId2}`;
   newChatId = Number(newChatId);
   data.photo ? newPhoto = data.photo : newPhoto = null;
-  data.newBody ? newBody = data.body : newBody = null;
-  console.log('here', newChatId);
+  data.body ? newBody = data.body : newBody = null;
 
   return pool
     .connect()
     .then((client) => {
-      console.log('how');
       const query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread) VALUES ($1, $2, $3, $4)';
-      const values = [newChatId, data.userId1, data.userId2, 1];
+      const values = [newChatId, data.senderId, data.userId2, 1];
       return client.query(query, values)
         .then((response) => {
-          console.log('what in the');
           const query = 'INSERT INTO conversation(chatId, senderId, body, photoUrl) VALUES ($1, $2, $3, $4)';
-          const values = [newChatId, data.userId1, newBody, data.photo];
-          client.query(query, values);
+          const values = [newChatId, data.senderId, newBody, data.photo];
+          return client.query(query, values);
         })
         .then((response) => {
-          console.log('hell');
           const query = 'SELECT * FROM conversation WHERE chatId=$1;';
           const values = [newChatId];
           return client.query(query, values);
         })
         .catch((err) => {
           console.log(err);
+          if (err.detail && err.detail.includes('already exists')) {
+            const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+            const values = [newChatId];
+            return client.query(query, values);
+          } else {
+            return null;
+          }
         });
     })
 
