@@ -22,7 +22,7 @@ jobs:
       - run:
           name: Run unit tests
           command: |
-            NODE_ENV=test && node node_modules/.bin/jest
+            npm run test
       - store_test_results:
           path: test-results
       - store_artifacts:
