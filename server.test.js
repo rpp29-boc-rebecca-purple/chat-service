@@ -46,33 +46,27 @@ describe ('GET /chatlist', () => {
 
 });
 
-xdescribe ('POST /new-conversation', () => {
-
-  const payload = {
-    senderId: 234,
-    userId2: 432,
-    body: 'this is a test'
-  };
+describe ('POST /new-conversation', () => {
 
   it('should create a new conversation for the submitted users', async () => {
-    request.post('/new-conversation', payload)
-      .set('Accept', 'application/json')
-      .expect(200, (response) => {
-        console.log('WHERE AM I?', response);
-        assert.equal(response.body.chatId, '234432');
-        done();
-      }
-      );
-    console.log(result);
+    const response = await request.post('/new-conversation').send({
+      senderId: 234,
+      userId2: 432,
+      body: 'this is a test'
+    });
+    expect(response.status).toBe(200);
   });
 
-  it('should respond with conversation data for existing conversations', async () => {
-    const response = await request.post('/new-conversation');
+  xit('should respond with conversation data for existing conversations', async () => {
+    const response = await request.post('/new-conversation').send({
+      senderId: 234,
+      userId2: 432,
+      body: 'this is a test'
+    });
     expect(response.status).toBe(400);
-    expect(Array.isArray(response.body)).toBe(false);
   });
 
-  it('should respond with a 400 status code for a missing body parameters', async () => {
+  xit('should respond with a 400 status code for a missing body parameters', async () => {
     const response = await request.post('/new-conversation');
     expect(response.status).toBe(400);
     expect(response.text).toBe('QUERY PARAM "userId" IS REQUIRED');

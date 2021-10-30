@@ -49,8 +49,9 @@ module.exports = {
   },
 
   postNewConversation: (req, res) => {
-    db.createNewConversation(req.query)
+    db.createNewConversation(req.body)
       .then((response) => {
+        console.log('new convo', response);
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO CREATE NEW CONVERSATION');
           return;
