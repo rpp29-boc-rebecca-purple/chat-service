@@ -53,7 +53,6 @@ module.exports = {
     return helpers.storePhoto(req)
       .then((photoData) => {
         let conversation = {};
-        console.log(photoData);
         if (photoData != null) {
           conversation.senderId = req.body.senderId;
           conversation.userId2 = req.body.userId2;
@@ -66,7 +65,6 @@ module.exports = {
         return db.createNewConversation(conversation);
       })
       .then((response) => {
-        console.log('RIGHT HERE', response);
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO CREATE NEW CONVERSATION');
           return;
@@ -75,7 +73,7 @@ module.exports = {
         }
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
         res.status(400).send('UNABLE TO CREATE NEW CONVERSATION  - try again later');
       });
 
@@ -85,7 +83,6 @@ module.exports = {
   },
 
   postNewMessage: (req, res) => {
-    console.log(req.body);
     if (!req.body.chatId || !req.body.senderId || !req.body.body) {
       res.status(400).send('MISSING INPUT - chatId, senderId, and body are required');
       return;
@@ -100,7 +97,6 @@ module.exports = {
   },
 
   postNewPhoto: (req, res) => {
-    console.log(req.body);
     if (!req.body.chatId || !req.body.senderId) {
       res.status(400).send('MISSING INPUT - chatId, senderId, and photo are required');
       return;

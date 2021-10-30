@@ -17,6 +17,7 @@ module.exports = {
       if (!req.file) {
         resolve(null);
       }
+      console.log(req.file);
       const s3 = new Aws.S3({
         accessKeyId: process.env.AWSKEY,
         secretAccessKey: process.env.AWSSECRET

@@ -3,12 +3,12 @@ const controllers = require('./controllers');
 const auth = require('./middleware').auth;
 const helpers = require('./helpers');
 const multer = require('multer');
-const memStorage = multer.memoryStorage()
+const memStorage = multer.memoryStorage();
 
 const upload = multer({
   storage: memStorage,
   limits: {
-    fileSize: 500000
+    fileSize: 5000000
   },
   fileFilter: helpers.filefilter
 });
