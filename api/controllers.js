@@ -80,7 +80,8 @@ module.exports = {
   },
 
   postNewPhoto: (req, res) => {
-    if (!req.body.chatId || !req.body.senderId || !req.body.photo) {
+    console.log(req.body);
+    if (!req.body.chatId || !req.body.senderId) {
       res.status(400).send('MISSING INPUT - chatId, senderId, and photo are required');
       return;
     }
@@ -97,6 +98,7 @@ module.exports = {
         res.status(200).send(response.rows);
       })
       .catch((err) => {
+        console.log(err);
         res.status(400).send(err);
       });
   }

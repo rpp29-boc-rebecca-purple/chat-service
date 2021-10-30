@@ -6,10 +6,10 @@ const multer = require('multer');
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  fileFilter: helpers.filefilter,
   limits: {
-    fileSize: 6000000
-  }
+    fileSize: 40000
+  },
+  fileFilter: helpers.filefilter
 });
 
 router.get('/chatlist', controllers.getChatlist);
