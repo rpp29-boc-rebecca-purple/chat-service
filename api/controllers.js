@@ -65,7 +65,7 @@ module.exports = {
   },
 
   postNewMessage: (req, res) => {
-    console.log(req.body)
+    console.log(req.body);
     if (!req.body.chatId || !req.body.senderId || !req.body.body) {
       res.status(400).send('MISSING INPUT - chatId, senderId, and body are required');
       return;

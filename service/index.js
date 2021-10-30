@@ -40,7 +40,7 @@ module.exports.createNewConversation = (data) => {
   let newChatId = `${data.senderId}${data.userId2}`;
   newChatId = Number(newChatId);
   data.photo ? newPhoto = data.photo : newPhoto = null;
-  data.photo ? unreadPhoto = true : unreadPhoto = true;
+  data.photo ? unreadPhoto = true : unreadPhoto = false;
   data.body ? newBody = data.body : newBody = null;
 
   const query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread, unreadPhoto, lastSenderId) VALUES ($1, $2, $3, $4, $5, $6)';
