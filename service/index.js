@@ -36,27 +36,26 @@ module.exports.getConversation = (chatId) => {
 };
 
 module.exports.createNewConversation = (data) => {
-  let newPhoto = null;
-  let newBody = null;
-  let unreadPhoto = null;
-
   let newChatId = `${data.senderId}${data.userId2}`;
   newChatId = Number(newChatId);
+  let query, query2, values, values2;
 
-  if (data.photo) {
-    newPhoto = data.photo;
-    unreadPhoto = true;
-  }
   if (data.body) {
-    newBody = data.body;
+    query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread, unreadPhoto, lastSenderId) VALUES ($1, $2, $3, $4, $5, $6)';
+    values = [newChatId, data.senderId, data.userId2, 1, false, data.senderId];
+
+    query2 = 'INSERT INTO conversation(chatId, senderId, body) VALUES ($1, $2, $3)';
+    values2 = [newChatId, data.senderId, data.body];
+  } else {
+    query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread, unreadPhoto, lastSenderId) VALUES ($1, $2, $3, $4, $5, $6)';
+    values = [newChatId, data.senderId, data.userId2, 1, true, data.senderId];
+
+    query2 = 'INSERT INTO conversation(chatId, senderId, photoUrl) VALUES ($1, $2, $3)';
+    values2 = [newChatId, data.senderId, data.photo];
   }
 
-  const query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread, unreadPhoto, lastSenderId) VALUES ($1, $2, $3, $4, $5, $6)';
-  const values = [newChatId, data.senderId, data.userId2, 1, unreadPhoto, data.senderId];
   return pool.query(query, values)
     .then((response) => {
-      const query2 = 'INSERT INTO conversation(chatId, senderId, body, photoUrl) VALUES ($1, $2, $3, $4)';
-      const values2 = [newChatId, data.senderId, newBody, data.photo];
       return pool.query(query2, values2);
     })
     .then((response) => {
@@ -70,6 +69,7 @@ module.exports.createNewConversation = (data) => {
         const values4 = [newChatId];
         return pool.query(query4, values4);
       } else {
+        console.log(err);
         return null;
       }
     });
