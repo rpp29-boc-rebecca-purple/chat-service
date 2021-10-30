@@ -2,9 +2,9 @@ DROP TABLE IF EXISTS chatlist;
 DROP TABLE IF EXISTS conversation;
 
 CREATE TABLE chatlist(
-  chatId INT NOT NULL,
-  uid1 INT NOT NULL,
-  uid2 INT NOT NULL,
+  chatId BIGINT NOT NULL,
+  uid1 BIGINT NOT NULL,
+  uid2 BIGINT NOT NULL,
   unread INT,
   time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -15,12 +15,12 @@ DELIMITER ','
 CSV HEADER;
 
 CREATE TABLE conversation(
-  chatId INT NOT NULL,
-  messageId INT NOT NULL,
-  senderId INT NOT NULL,
+  chatId BIGINT NOT NULL,
+  messageId SERIAL,
+  senderId BIGINT NOT NULL,
   body VARCHAR,
   photoUrl VARCHAR,
-  read BOOLEAN,
+  read BOOLEAN DEFAULT 'f',
   time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

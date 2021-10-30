@@ -14,15 +14,14 @@ const upload = multer({
 
 router.get('/chatlist', controllers.getChatlist);
 router.get('/conversation', controllers.getConversation);
-// router.get('/example', auth, controllers.getExample);
 
-router.post('/addPhoto', upload.single('photo'), controllers.postAddPhoto);
-// router.post('/addMessage', auth, controllers.setExample);
-// router.post('/newChat', auth, controllers.setExample);
+router.post('/add-photo', upload.single('photo'), controllers.postNewPhoto);
+router.post('/add-message', controllers.postNewMessage);
+router.post('/new-conversation', upload.single('photo'), controllers.postNewConversation);
 
-// router.put('/readMessage', auth, controllers.putReadMessages);
+router.put('/read-message', controllers.putReadMessages);
 
-// router.put('/deletePhoto', auth, controllers.putDeletePhoto);
+router.delete('/delete-photo', controllers.deletePhoto);
 
 
 
