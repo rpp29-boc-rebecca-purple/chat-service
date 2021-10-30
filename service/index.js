@@ -31,7 +31,6 @@ module.exports.createNewConversation = (data) => {
   newChatId = Number(newChatId);
   data.photo ? newPhoto = data.photo : newPhoto = null;
   data.body ? newBody = data.body : newBody = null;
-  console.log('HERE', data, newChatId);
 
   const query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread) VALUES ($1, $2, $3, $4)';
   const values = [newChatId, data.senderId, data.userId2, 1];
@@ -47,7 +46,6 @@ module.exports.createNewConversation = (data) => {
       return pool.query(query, values);
     })
     .catch((err) => {
-      console.log('new conver', err);
       if (err.detail && err.detail.includes('already exists')) {
         const query = 'SELECT * FROM conversation WHERE chatId=$1;';
         const values = [newChatId];
@@ -73,7 +71,6 @@ module.exports.addPhoto = (data) => {
       return pool.query(query, values);
     })
     .catch((err) => {
-      console.log(err);
       return null;
     });
 };
