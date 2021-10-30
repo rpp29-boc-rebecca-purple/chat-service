@@ -49,8 +49,9 @@ module.exports = {
   },
 
   postNewConversation: (req, res) => {
-    db.createNewConversation(req.query)
+    db.createNewConversation(req.body)
       .then((response) => {
+        console.log('new convo', response);
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO CREATE NEW CONVERSATION');
           return;
@@ -69,11 +70,22 @@ module.exports = {
   },
 
   postNewPhoto: (req, res) => {
+    const data = {
+      chatId: req.body.chatId,
+      senderId: req.body.senderId
+    };
     return helpers.storePhoto(req)
       .then((photoData) => {
-        res.status(201).send(photoData.Location);
+        console.log('PHOTO LOCATION', photoData.Location);
+        data.photoURL = photoData.Location;
+        return db.addPhoto(data);
+      })
+      .then((response) => {
+        console.log('QUERY RESPONSE', response);
+        res.status(200).send(response.rows);
       })
       .catch((err) => {
+        console.log('QUERY ERR', err);
         res.status(400).send(err);
       });
   }

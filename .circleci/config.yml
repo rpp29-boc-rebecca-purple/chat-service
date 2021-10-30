@@ -1,23 +1,33 @@
 version: 2.1
+orbs:
+  node: circleci/node@4.1
 jobs:
-  build:
-    working_directory: ~/repo
+  run_tests:
     docker:
-      - image: circleci/node:10.16.3
+      - image: cimg/node:15.1
+      - image: circleci/postgres:9.5-postgis
+        environment:
+          POSTGRES_USER: $PGUSER
+          POSTGRES_DB: $PGDATABASE
+          POSTGRES_PASSWORD: $PGPASSWORD
+          POSTGRES_HOST: $PGHOST
+          POSTGRES_PORT: $PGPORT
     steps:
-      - checkout
+      - checkout #alias for git clone\
+      - node/install-packages
       - run:
-          name: Update NPM
-          command: "sudo npm install -g npm@6.14.10"
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          name: Install npm dependencies
+          command: |
+            npm install --save
       - run:
-          name: Install Dependencies
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - ./node_modules
-      - run:
-          name: Run tests
-          command: npm run test
+          name: Run unit tests
+          command: |
+            NODE_ENV=test && node node_modules/.bin/jest
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+workflows:
+  build_test:
+    jobs:
+      - run_tests

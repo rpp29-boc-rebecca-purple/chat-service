@@ -12,7 +12,6 @@ module.exports.getChatList = (userId) => {
   const values = [userId];
   return pool.query(query, values)
     .catch((err) => {
-      client.release();
       return null;
     });
 };
@@ -26,16 +25,13 @@ module.exports.getConversation = (chatId) => {
     });
 };
 
-module.exports.addPhoto = () => {
-
-};
-
 module.exports.createNewConversation = (data) => {
   let newPhoto, newBody;
   let newChatId = `${data.senderId}${data.userId2}`;
   newChatId = Number(newChatId);
   data.photo ? newPhoto = data.photo : newPhoto = null;
   data.body ? newBody = data.body : newBody = null;
+  console.log('HERE', data, newChatId);
 
   const query = 'INSERT INTO chatlist(chatId, uid1, uid2, unread) VALUES ($1, $2, $3, $4)';
   const values = [newChatId, data.senderId, data.userId2, 1];
@@ -51,7 +47,7 @@ module.exports.createNewConversation = (data) => {
       return pool.query(query, values);
     })
     .catch((err) => {
-      // console.log(err);
+      console.log('new conver', err);
       if (err.detail && err.detail.includes('already exists')) {
         const query = 'SELECT * FROM conversation WHERE chatId=$1;';
         const values = [newChatId];
@@ -59,6 +55,26 @@ module.exports.createNewConversation = (data) => {
       } else {
         return null;
       }
+    });
+};
+
+module.exports.addPhoto = (data) => {
+  const query = 'INSERT INTO conversation (chatId, senderId, photoUrl) VALUES ($1, $2, $3)';
+  const values = [data.chatId, data.senderId, data.photoURL];
+  return pool.query(query, values)
+    .then((response) => {
+      const query = 'UPDATE chatlist SET unread=unread + 1, unreadPhoto=true, time=CURRENT_TIMESTAMP WHERE chatId=$1;';
+      const values = [data.chatId];
+      return pool.query(query, values);
+    })
+    .then((response) => {
+      const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+      const values = [data.chatId];
+      return pool.query(query, values);
+    })
+    .catch((err) => {
+      console.log(err);
+      return null;
     });
 };
 
