@@ -40,18 +40,17 @@ module.exports = {
       });
   },
 
-  putReadMessages: (req, res) => {
-    res.send(200);
-  },
-
   deletePhoto: (req, res) => {
     res.send(200);
   },
 
   postNewConversation: (req, res) => {
+    if (!req.body.senderId || !req.body.userId2) {
+      res.status(400).send('MISSING INPUT - senderId, userId2, and (body or photo) are required');
+      return;
+    }
     db.createNewConversation(req.body)
       .then((response) => {
-        console.log('new convo', response);
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO CREATE NEW CONVERSATION');
           return;
@@ -66,26 +65,38 @@ module.exports = {
   },
 
   postNewMessage: (req, res) => {
-    res.send(200);
+    console.log(req.body);
+    if (!req.body.chatId || !req.body.senderId || !req.body.body) {
+      res.status(400).send('MISSING INPUT - chatId, senderId, and body are required');
+      return;
+    }
+    return db.addMessage(req.body)
+      .then((response) => {
+        res.status(200).send(response.rows);
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
   },
 
   postNewPhoto: (req, res) => {
+    if (!req.body.chatId || !req.body.senderId || !req.body.photo) {
+      res.status(400).send('MISSING INPUT - chatId, senderId, and photo are required');
+      return;
+    }
     const data = {
       chatId: req.body.chatId,
       senderId: req.body.senderId
     };
     return helpers.storePhoto(req)
       .then((photoData) => {
-        console.log('PHOTO LOCATION', photoData.Location);
         data.photoURL = photoData.Location;
         return db.addPhoto(data);
       })
       .then((response) => {
-        console.log('QUERY RESPONSE', response);
         res.status(200).send(response.rows);
       })
       .catch((err) => {
-        console.log('QUERY ERR', err);
         res.status(400).send(err);
       });
   }

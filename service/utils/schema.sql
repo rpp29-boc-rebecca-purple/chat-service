@@ -7,6 +7,7 @@ CREATE TABLE chatlist(
   uid2 BIGINT NOT NULL,
   unread INT,
   unreadPhoto BOOLEAN DEFAULT 'f',
+  lastSenderId BIGINT NOT NULL,
   time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

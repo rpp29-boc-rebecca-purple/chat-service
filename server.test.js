@@ -57,19 +57,39 @@ describe ('POST /new-conversation', () => {
     expect(response.status).toBe(200);
   });
 
-  xit('should respond with conversation data for existing conversations', async () => {
+  it('should respond with conversation data for existing conversations', async () => {
     const response = await request.post('/new-conversation').send({
       senderId: 234,
       userId2: 432,
       body: 'this is a test'
     });
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(200);
   });
 
-  xit('should respond with a 400 status code for a missing body parameters', async () => {
+  it('should respond with a 400 status code for a missing body parameters', async () => {
     const response = await request.post('/new-conversation');
     expect(response.status).toBe(400);
-    expect(response.text).toBe('QUERY PARAM "userId" IS REQUIRED');
+    expect(response.text).toBe('MISSING INPUT - senderId, userId2, and (body or photo) are required');
+  });
+
+});
+
+describe ('POST /add-photo', () => {
+
+  it('should respond with a 400 status code for a missing body parameters', async () => {
+    const response = await request.post('/add-photo');
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('MISSING INPUT - chatId, senderId, and photo are required');
+  });
+
+});
+
+describe ('POST /add-message', () => {
+
+  it('should respond with a 400 status code for a missing body parameters', async () => {
+    const response = await request.post('/add-message');
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('MISSING INPUT - chatId, senderId, and body are required');
   });
 
 });
