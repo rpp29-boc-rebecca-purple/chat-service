@@ -12,7 +12,6 @@ module.exports.getChatList = (userId) => {
   const values = [userId];
   return pool.query(query, values)
     .catch((err) => {
-      client.release();
       return null;
     });
 };
@@ -24,10 +23,6 @@ module.exports.getConversation = (chatId) => {
     .catch((err) => {
       return null;
     });
-};
-
-module.exports.addPhoto = () => {
-
 };
 
 module.exports.createNewConversation = (data) => {
@@ -51,7 +46,6 @@ module.exports.createNewConversation = (data) => {
       return pool.query(query, values);
     })
     .catch((err) => {
-      // console.log(err);
       if (err.detail && err.detail.includes('already exists')) {
         const query = 'SELECT * FROM conversation WHERE chatId=$1;';
         const values = [newChatId];
@@ -59,6 +53,26 @@ module.exports.createNewConversation = (data) => {
       } else {
         return null;
       }
+    });
+};
+
+module.exports.addPhoto = (data) => {
+  const query = 'INSERT INTO conversation (chatId, senderId, photoUrl) VALUES ($1, $2, $3)';
+  const values = [data.chatId, data.senderId, data.photoURL];
+  return pool.query(query, values)
+    .then((response) => {
+      const query = 'UPDATE chatlist SET unread=unread + 1, unreadPhoto=true, time=CURRENT_TIMESTAMP WHERE chatId=$1;';
+      const values = [data.chatId];
+      return pool.query(query, values);
+    })
+    .then((response) => {
+      const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+      const values = [data.chatId];
+      return pool.query(query, values);
+    })
+    .catch((err) => {
+      console.log(err);
+      return null;
     });
 };
 

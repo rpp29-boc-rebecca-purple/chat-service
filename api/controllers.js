@@ -69,11 +69,22 @@ module.exports = {
   },
 
   postNewPhoto: (req, res) => {
+    const data = {
+      chatId: req.body.chatId,
+      senderId: req.body.senderId
+    };
     return helpers.storePhoto(req)
       .then((photoData) => {
-        res.status(201).send(photoData.Location);
+        console.log('PHOTO LOCATION', photoData.Location);
+        data.photoURL = photoData.Location;
+        return db.addPhoto(data);
+      })
+      .then((response) => {
+        console.log('QUERY RESPONSE', response);
+        res.status(200).send(response.rows);
       })
       .catch((err) => {
+        console.log('QUERY ERR', err);
         res.status(400).send(err);
       });
   }
