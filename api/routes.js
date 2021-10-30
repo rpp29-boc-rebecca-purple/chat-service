@@ -3,13 +3,15 @@ const controllers = require('./controllers');
 const auth = require('./middleware').auth;
 const helpers = require('./helpers');
 const multer = require('multer');
+const memStorage = multer.memoryStorage();
 
 const upload = multer({
-  storage: multer.memoryStorage(),
-  fileFilter: helpers.filefilter,
+  storage: memStorage,
   limits: {
+    fields: 1,
     fileSize: 6000000
-  }
+  },
+  fileFilter: helpers.filefilter
 });
 
 router.get('/chatlist', controllers.getChatlist);

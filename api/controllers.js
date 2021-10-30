@@ -49,7 +49,21 @@ module.exports = {
       res.status(400).send('MISSING INPUT - senderId, userId2, and (body or photo) are required');
       return;
     }
-    db.createNewConversation(req.body)
+    console.log(req.body);
+    return helpers.storePhoto(req)
+      .then((photoData) => {
+        let conversation = {};
+        if (photoData != null) {
+          conversation.senderId = req.body.senderId;
+          conversation.userId2 = req.body.userId2;
+          conversation.photo = photoData.Location;
+        } else {
+          conversation.senderId = req.body.senderId;
+          conversation.userId2 = req.body.userId2;
+          conversation.body = req.body.body;
+        }
+        return db.createNewConversation(conversation);
+      })
       .then((response) => {
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO CREATE NEW CONVERSATION');
@@ -59,13 +73,16 @@ module.exports = {
         }
       })
       .catch((err) => {
+        console.log(err);
         res.status(400).send('UNABLE TO CREATE NEW CONVERSATION  - try again later');
       });
+
+
+
 
   },
 
   postNewMessage: (req, res) => {
-    console.log(req.body);
     if (!req.body.chatId || !req.body.senderId || !req.body.body) {
       res.status(400).send('MISSING INPUT - chatId, senderId, and body are required');
       return;
@@ -80,7 +97,7 @@ module.exports = {
   },
 
   postNewPhoto: (req, res) => {
-    if (!req.body.chatId || !req.body.senderId || !req.body.photo) {
+    if (!req.body.chatId || !req.body.senderId) {
       res.status(400).send('MISSING INPUT - chatId, senderId, and photo are required');
       return;
     }
@@ -97,6 +114,7 @@ module.exports = {
         res.status(200).send(response.rows);
       })
       .catch((err) => {
+        console.log(err);
         res.status(400).send(err);
       });
   }
