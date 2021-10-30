@@ -11,7 +11,6 @@ module.exports = {
     }
     return db.getChatList(req.query.userId)
       .then((response) => {
-        // console.log(response.rows);
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO GET CHAT LIST - try again later');
         } else {
@@ -19,7 +18,6 @@ module.exports = {
         }
       })
       .catch((err) => {
-        // console.log('GET CHAT LIST ERR', err);
         res.status(400).send('UNABLE TO GET CHAT LIST - try again later');
       });
   },
@@ -38,7 +36,6 @@ module.exports = {
         }
       })
       .catch((err) => {
-        // console.log('GET CONVERSATION ERR', err);
         res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
       });
   },
@@ -55,7 +52,6 @@ module.exports = {
     db.createNewConversation(req.query)
       .then((response) => {
         if (!response || response.rowCount === 0) {
-          console.log(response);
           res.status(400).send('UNABLE TO CREATE NEW CONVERSATION');
           return;
         } else {
