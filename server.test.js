@@ -74,12 +74,22 @@ describe ('POST /new-conversation', () => {
 
 });
 
-describe ('POST /new-photo', () => {
+describe ('POST /add-photo', () => {
 
   it('should respond with a 400 status code for a missing body parameters', async () => {
     const response = await request.post('/add-photo');
     expect(response.status).toBe(400);
     expect(response.text).toBe('MISSING INPUT - chatId, senderId, and photo are required');
+  });
+
+});
+
+describe ('POST /add-message', () => {
+
+  it('should respond with a 400 status code for a missing body parameters', async () => {
+    const response = await request.post('/add-message');
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('MISSING INPUT - chatId, senderId, and body are required');
   });
 
 });

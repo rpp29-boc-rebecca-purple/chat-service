@@ -16,10 +16,8 @@ router.get('/chatlist', controllers.getChatlist);
 router.get('/conversation', controllers.getConversation);
 
 router.post('/add-photo', upload.single('photo'), controllers.postNewPhoto);
-router.post('/add-message', controllers.postNewMessage);
+router.post('/add-message', upload.single('photo'), controllers.postNewMessage);
 router.post('/new-conversation', upload.single('photo'), controllers.postNewConversation);
-
-router.put('/read-message', controllers.putReadMessages);
 
 router.delete('/delete-photo', controllers.deletePhoto);
 

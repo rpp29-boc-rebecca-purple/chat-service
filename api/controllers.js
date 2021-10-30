@@ -40,10 +40,6 @@ module.exports = {
       });
   },
 
-  putReadMessages: (req, res) => {
-    res.send(200);
-  },
-
   deletePhoto: (req, res) => {
     res.send(200);
   },
@@ -69,7 +65,18 @@ module.exports = {
   },
 
   postNewMessage: (req, res) => {
-    res.send(200);
+    console.log(req.body)
+    if (!req.body.chatId || !req.body.senderId || !req.body.body) {
+      res.status(400).send('MISSING INPUT - chatId, senderId, and body are required');
+      return;
+    }
+    return db.addMessage(req.body)
+      .then((response) => {
+        res.status(200).send(response.rows);
+      })
+      .catch((err) => {
+        res.status(400).send(err);
+      });
   },
 
   postNewPhoto: (req, res) => {
@@ -77,7 +84,6 @@ module.exports = {
       res.status(400).send('MISSING INPUT - chatId, senderId, and photo are required');
       return;
     }
-
     const data = {
       chatId: req.body.chatId,
       senderId: req.body.senderId

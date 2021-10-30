@@ -17,9 +17,19 @@ module.exports.getChatList = (userId) => {
 };
 
 module.exports.getConversation = (chatId) => {
-  const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+  const query = 'UPDATE conversation SET read=true WHERE chatId=$1 AND read=false;';
   const values = [chatId];
   return pool.query(query, values)
+    .then((response) => {
+      const query = 'UPDATE chatlist SET unread=0 WHERE chatId=$1';
+      const values = [chatId];
+      return pool.query(query, values);
+    })
+    .then((response) => {
+      const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+      const values = [chatId];
+      return pool.query(query, values);
+    })
     .catch((err) => {
       return null;
     });
@@ -47,7 +57,6 @@ module.exports.createNewConversation = (data) => {
       return pool.query(query, values);
     })
     .catch((err) => {
-      console.log(err);
       if (err.detail && err.detail.includes('already exists')) {
         const query = 'SELECT * FROM conversation WHERE chatId=$1;';
         const values = [newChatId];
@@ -77,12 +86,23 @@ module.exports.addPhoto = (data) => {
     });
 };
 
-module.exports.addMessage = () => {
-
-};
-
-module.exports.readMessages = () => {
-
+module.exports.addMessage = (data) => {
+  const query = 'INSERT INTO conversation (chatId, senderId, body) VALUES ($1, $2, $3)';
+  const values = [data.chatId, data.senderId, data.body];
+  return pool.query(query, values)
+    .then((response) => {
+      const query = 'UPDATE chatlist SET unread = unread+1, lastSenderId = $2, time = CURRENT_TIMESTAMP WHERE chatId=$1;';
+      const values = [data.chatId, data.senderId];
+      return pool.query(query, values);
+    })
+    .then((response) => {
+      const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+      const values = [data.chatId];
+      return pool.query(query, values);
+    })
+    .catch((err) => {
+      return null;
+    });
 };
 
 module.exports.deletePhoto = () => {
