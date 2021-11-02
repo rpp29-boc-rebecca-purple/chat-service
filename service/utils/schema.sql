@@ -11,10 +11,10 @@ CREATE TABLE chatlist(
   time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-COPY chatlist
-FROM '/home/ubuntu/chatlist.csv'
-DELIMITER ','
-CSV HEADER;
+-- COPY chatlist
+-- FROM '/home/ubuntu/chatlist.csv'
+-- DELIMITER ','
+-- CSV HEADER;
 
 CREATE TABLE conversation(
   chatId BIGINT NOT NULL,
@@ -26,10 +26,10 @@ CREATE TABLE conversation(
   time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-COPY conversation
-FROM '/home/ubuntu/conversation.csv'
-DELIMITER ','
-CSV HEADER;
+-- COPY conversation
+-- FROM '/home/ubuntu/conversation.csv'
+-- DELIMITER ','
+-- CSV HEADER;
 
 CREATE UNIQUE INDEX cid ON chatlist(chatId);
 -- CREATE UNIQUE INDEX chid ON conversation(chatId);

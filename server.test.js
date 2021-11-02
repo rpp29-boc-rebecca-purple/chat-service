@@ -6,13 +6,13 @@ const request = supertest(app);
 describe ('GET /conversation', () => {
 
   it('should respond with conversation data for valid chatId', async () => {
-    const response = await request.get('/conversation?chatId=1');
+    const response = await request.get('/conversation?chatId=12');
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
   });
 
   it('should respond with a 400 status code for an invalid chatId', async () => {
-    const response = await request.get('/conversation?chatId=999');
+    const response = await request.get('/conversation?chatId=999999');
     expect(response.status).toBe(400);
     expect(Array.isArray(response.body)).toBe(false);
   });
@@ -35,7 +35,7 @@ describe ('GET /chatlist', () => {
   });
 
   it('should respond with a 400 status code for an invalid chatId', async () => {
-    const response = await request.get('/chatlist?userId=999');
+    const response = await request.get('/chatlist?userId=999999');
     expect(response.status).toBe(400);
     expect(Array.isArray(response.body)).toBe(false);
   });
@@ -53,8 +53,8 @@ describe ('POST /new-conversation', () => {
 
   it('should create a new conversation for the submitted users', async () => {
     const response = await request.post('/new-conversation').send({
-      senderId: 234,
-      userId2: 432,
+      senderId: 11,
+      userId2: 22,
       body: 'this is a test'
     });
     expect(response.status).toBe(200);
@@ -62,8 +62,8 @@ describe ('POST /new-conversation', () => {
 
   it('should respond with conversation data for existing conversations', async () => {
     const response = await request.post('/new-conversation').send({
-      senderId: 234,
-      userId2: 432,
+      senderId: 11,
+      userId2: 22,
       body: 'this is a test'
     });
     expect(response.status).toBe(200);
@@ -93,8 +93,8 @@ describe ('POST /add-message', () => {
 
   it('should add a message to an existing conversation between two users', async () => {
     const response = await request.post('/add-message').send({
-      senderId: 1,
-      chatId: 12,
+      senderId: 11,
+      chatId: 22,
       body: 'this is a test'
     });
     expect(response.status).toBe(200);
