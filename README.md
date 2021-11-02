@@ -1,4 +1,4 @@
-## CHATLIST/CONVERSATION API
+## CHATLIST/CONVERSATION API 
 
 ### GET /chatlist [deployed]  
 
@@ -25,7 +25,7 @@ QUERY PARAMS :
 
 QUERY PARAMS : 
 - chatId: INTEGER
-returns an array of objects containing all information for each message in conversation
+> returns an array of objects containing all information for each message in conversation
 ```
 [
     {
@@ -41,14 +41,14 @@ returns an array of objects containing all information for each message in conve
 ]
 ```
 
-### <span style='color:rebeccapurple'> POST /new-conversation </span>
+### POST /new-conversation
 
 BODY PARAMS : 
 - senderId: INT
 - userId2: INT
 - body(optional): VARCHAR
 - photo(optional): jpg file }
-returns an array of objects containing information for new active chat for user
+> returns an array of objects containing information for new active chat for user
 ```
 [
     {
@@ -64,9 +64,14 @@ returns an array of objects containing information for new active chat for user
 ]
 ```
 
-POST /add-message
-BODY PARAMS : { chatId: INT,  senderId: INT,  body: VARCHAR,  date: VARCHAR }
-returns an array of objects containing information for current conversation with chatId including the newly added message
+### POST /add-message
+
+BODY PARAMS : 
+- chatId: INT
+- senderId: INT
+- body: VARCHAR
+- date: VARCHAR
+> returns an array of objects containing information for current conversation with chatId including the newly added message
 ```
 [
     {
@@ -82,9 +87,13 @@ returns an array of objects containing information for current conversation with
 ]
 ```
 
-POST /add-photo
-BODY PARAMS : { chatId: INT,  senderId: INT,  photo: (photo file - must be jpg)  }
-returns an array of objects containing information for current conversation with chatId including the newly added photos
+### POST /add-photo
+
+BODY PARAMS :
+- chatId: INT
+- senderId: INT
+- photo: (photo file - must be jpg) 
+> returns an array of objects containing information for current conversation with chatId including the newly added photos
 ```
 [
     {
@@ -100,9 +109,12 @@ returns an array of objects containing information for current conversation with
 ]
 ```
 
-DELETE /delete-photo
-QUERY PARAMS : { chatId: INT,  messageId: INT }
-returns an array of objects containing information for current conversation with chatId excluding the newly deleted photo
+### DELETE /delete-photo
+
+QUERY PARAMS :
+- chatId: INT
+- messageId: INT
+> returns an array of objects containing information for current conversation with chatId excluding the newly deleted photo
 ```
 [
     {
