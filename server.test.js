@@ -128,8 +128,6 @@ describe ('POST /delete-photo', () => {
   });
 
   it('should respond with a status of 400 for missing paramters', async () => {
-    let addedMessage = await addMessage();
-
     const response = await request.delete('/delete-photo');
     expect(response.status).toBe(400);
     expect(response.text).toBe('QUERY PARAM "chatId" and "messageId" ARE REQUIRED');
