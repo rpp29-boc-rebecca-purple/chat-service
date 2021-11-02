@@ -98,7 +98,6 @@ describe ('POST /add-message', () => {
       body: 'this is a test'
     });
     expect(response.status).toBe(200);
-    let addedMessage = response.body[0].messageid;
   });
 
   it('should respond with a 400 status code for a missing body parameters', async () => {
