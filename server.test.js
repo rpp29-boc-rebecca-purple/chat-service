@@ -110,21 +110,38 @@ describe ('POST /add-message', () => {
 });
 
 
-xdescribe ('POST /delete-message', () => {
+describe ('POST /delete-photo', () => {
 
-  it('adding message to be delete', async () => {
+  const addMessage = async () => {
     const response = await request.post('/add-message').send({
       senderId: 1,
       chatId: 12,
       body: 'this is a test'
     });
-    expect(response.status).toBe(200);
-    addedMessage = response.body[0].messageid;
-  });
+    return response.body[0].messageid;
+  };
 
   it('should respond with a status of 200 after a message is successfully deleted', async () => {
-    const response = await request.post(`/delete-message?chatId=12&messageId=${addedMessage}`);
+    let addedMessage = await addMessage();
+
+    const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}`);
     expect(response.status).toBe(200);
+  });
+
+  it('should respond with a status of 400 for missing paramters', async () => {
+    let addedMessage = await addMessage();
+
+    const response = await request.delete('/delete-photo');
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('QUERY PARAM "chatId" and "messageId" ARE REQUIRED');
+  });
+
+  it('should respond with a status of 400 for invalid messageIds', async () => {
+    let addedMessage = 99999999;
+
+    const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}`);
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Submitted MessageID does not exist');
   });
 
 });
