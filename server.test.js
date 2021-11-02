@@ -2,6 +2,7 @@ const app = require('./server/server.js');
 const supertest = require('supertest');
 const request = supertest(app);
 
+
 describe ('GET /conversation', () => {
 
   it('should respond with conversation data for valid chatId', async () => {
@@ -24,6 +25,7 @@ describe ('GET /conversation', () => {
 
 });
 
+
 describe ('GET /chatlist', () => {
 
   it('should respond with chatlist data for valid chatId', async () => {
@@ -45,6 +47,7 @@ describe ('GET /chatlist', () => {
   });
 
 });
+
 
 describe ('POST /new-conversation', () => {
 
@@ -74,6 +77,7 @@ describe ('POST /new-conversation', () => {
 
 });
 
+
 describe ('POST /add-photo', () => {
 
   it('should respond with a 400 status code for a missing body parameters', async () => {
@@ -84,12 +88,57 @@ describe ('POST /add-photo', () => {
 
 });
 
+
 describe ('POST /add-message', () => {
+
+  it('should add a message to an existing conversation between two users', async () => {
+    const response = await request.post('/add-message').send({
+      senderId: 1,
+      chatId: 12,
+      body: 'this is a test'
+    });
+    expect(response.status).toBe(200);
+  });
 
   it('should respond with a 400 status code for a missing body parameters', async () => {
     const response = await request.post('/add-message');
     expect(response.status).toBe(400);
     expect(response.text).toBe('MISSING INPUT - chatId, senderId, and body are required');
+  });
+
+});
+
+
+describe ('POST /delete-photo', () => {
+
+  const addMessage = async () => {
+    const response = await request.post('/add-message').send({
+      senderId: 1,
+      chatId: 12,
+      body: 'this is a test'
+    });
+    return response.body[0].messageid;
+  };
+
+  it('should respond with a status of 200 after a message is successfully deleted', async () => {
+    let addedMessage = await addMessage();
+
+    const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}`);
+    expect(response.status).toBe(200);
+  });
+
+  it('should respond with a status of 400 for missing paramters', async () => {
+    const response = await request.delete('/delete-photo');
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('QUERY PARAM "chatId" and "messageId" ARE REQUIRED');
+  });
+
+  it('should respond with a status of 400 for invalid messageIds', async () => {
+    let addedMessage = 99999999;
+
+    const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}`);
+    expect(response.status).toBe(400);
+    expect(response.text).toBe('Submitted MessageID does not exist');
   });
 
 });

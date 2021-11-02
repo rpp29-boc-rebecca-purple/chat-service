@@ -41,7 +41,23 @@ module.exports = {
   },
 
   deletePhoto: (req, res) => {
-    res.send(200);
+    if (!req.query.chatId || !req.query.messageId) {
+      res.status(400).send('QUERY PARAM "chatId" and "messageId" ARE REQUIRED');
+      return;
+    }
+    return db.deletePhoto(req.query)
+      .then((response) => {
+        if (!response || response.rowCount === 0) {
+          res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
+        } else if (response === 'noID') {
+          res.status(400).send('Submitted MessageID does not exist');
+        } else {
+          res.status(200).send(response.rows);
+        }
+      })
+      .catch((err) => {
+        res.status(400).send('UNABLE TO DELETE PHOTO - try again later');
+      });
   },
 
   postNewConversation: (req, res) => {
@@ -49,7 +65,6 @@ module.exports = {
       res.status(400).send('MISSING INPUT - senderId, userId2, and (body or photo) are required');
       return;
     }
-    console.log(req.body);
     return helpers.storePhoto(req)
       .then((photoData) => {
         let conversation = {};
@@ -76,10 +91,6 @@ module.exports = {
         console.log(err);
         res.status(400).send('UNABLE TO CREATE NEW CONVERSATION  - try again later');
       });
-
-
-
-
   },
 
   postNewMessage: (req, res) => {
