@@ -113,8 +113,18 @@ module.exports.addMessage = (data) => {
     });
 };
 
-module.exports.deletePhoto = () => {
-
+module.exports.deletePhoto = (data) => {
+  const query = 'DELETE FROM conversation WHERE messageId=$1;';
+  const values = [data.messageId];
+  return pool.query(query, values)
+    .then((response) => {
+      const query2 = 'SELECT * FROM conversation WHERE chatId=$1;';
+      const values2 = [data.chatId];
+      return pool.query(query2, values2);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 
