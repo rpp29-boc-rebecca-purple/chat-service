@@ -2,9 +2,9 @@
 
 #### Test IDs:
 
-userIds: 1, 2, 3, 5
+userIds: 1, 2, 3, 5, 6
 
-chatIds: 12, 13, 23, 51
+chatIds: 12, 13, 14, 15, 16
 
 ### GET /chatlist [deployed]  
 
