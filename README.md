@@ -1,5 +1,11 @@
 ## CHATLIST/CONVERSATION API 
 
+#### Test IDs:
+
+userIds: 1, 2, 3, 5
+
+chatIds: 12, 13, 23, 51
+
 ### GET /chatlist [deployed]  
 
 QUERY PARAMS :
