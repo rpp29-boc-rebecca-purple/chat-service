@@ -41,24 +41,32 @@ module.exports = {
   },
 
   deletePhoto: (req, res) => {
-    if (!req.query.chatId || !req.query.messageId) {
-      res.status(400).send('QUERY PARAM "chatId" and "messageId" ARE REQUIRED');
+    if (!req.query.chatId || !req.query.messageId || !req.query.url) {
+      res.status(400).send('QUERY PARAM "chatId", "messageId", and "url" ARE REQUIRED');
       return;
     }
-    return db.deletePhoto(req.query)
-      .then((response) => {
-        if (!response || response.rowCount === 0) {
-          res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
-        } else if (response === 'noID') {
-          console.log('right here');
-          res.status(400).send('Submitted MessageID does not exist');
-        } else {
-          res.status(200).send(response.rows);
-        }
-      })
-      .catch((err) => {
-        res.status(400).send('UNABLE TO DELETE PHOTO - try again later');
-      });
+    setTimeout(() => {
+      return db.deletePhoto(req.query)
+        .then((response) => {
+          if (!response || response.rowCount === 0) {
+            res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
+          } else if (response === 'noID') {
+            res.status(400).send('Submitted MessageID does not exist');
+          } else {
+            return helpers.deletePhoto(req.query.url);
+          }
+        })
+        .then((deleted) => {
+          return db.getAfterDelete(req.query.chatId);
+        })
+        .then((finalResponse) => {
+          res.status(200).send(finalResponse.rows);
+        })
+        .catch((err) => {
+          res.status(400).send('UNABLE TO DELETE PHOTO - try again later');
+        });
+    }, 5000);
+
   },
 
   postNewConversation: (req, res) => {
