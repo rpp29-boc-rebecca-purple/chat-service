@@ -113,12 +113,12 @@ describe ('POST /delete-photo', () => {
 
   it('should respond with a status of 200 after a message is successfully deleted', async () => {
     const addMessage = async () => {
-      const response = await request.post('/add-message').send({
+      const addMessageResponse = await request.post('/add-message').send({
         senderId: 1,
         chatId: 19,
         body: 'this is should be deleted'
       });
-      return response.body[0].messageid;
+      return addMessageResponse.body[0].messageid;
     };
 
     let addedMessage = await addMessage();
