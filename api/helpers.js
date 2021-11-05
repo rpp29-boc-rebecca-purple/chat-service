@@ -33,6 +33,31 @@ module.exports = {
           console.log(err);
           reject(null);
         }
+        console.log('photo result', result);
+        resolve(result);
+      });
+    });
+  },
+
+  downloadPhoto: (url) => {
+    return new Promise((resolve, reject) => {
+      if (!url) {
+        resolve(null);
+      }
+      const s3 = new Aws.S3({
+        accessKeyId: process.env.AWSKEY,
+        secretAccessKey: process.env.AWSSECRET
+      });
+      let fileName = url.slice(37);
+      const params = {
+        Bucket: 'croutonchat',
+        Key: fileName
+      };
+      s3.getObject(params, (err, result) => {
+        if (err) {
+          console.log(err);
+          reject(null);
+        }
         resolve(result);
       });
     });

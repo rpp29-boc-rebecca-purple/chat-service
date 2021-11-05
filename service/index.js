@@ -21,7 +21,7 @@ module.exports.getConversation = (chatId) => {
   const values = [chatId];
   return pool.query(query, values)
     .then((response) => {
-      const query2 = 'UPDATE chatlist SET unread=0 WHERE chatId=$1';
+      const query2 = 'UPDATE chatlist SET unread=0 WHERE chatId=$1 RETURNING *;';
       const values2 = [chatId];
       return pool.query(query2, values2);
     })
@@ -31,6 +31,7 @@ module.exports.getConversation = (chatId) => {
       return pool.query(query3, values3);
     })
     .catch((err) => {
+      console.log(err);
       return null;
     });
 };
@@ -114,10 +115,12 @@ module.exports.addMessage = (data) => {
 };
 
 module.exports.deletePhoto = (data) => {
+  console.log('delete is here', data.messageId);
   const query = 'DELETE FROM conversation WHERE messageId=$1;';
   const values = [data.messageId];
   return pool.query(query, values)
     .then((response) => {
+      console.log(response);
       if (response.rowCount === 0) {
         return 'noID';
       }
@@ -129,5 +132,6 @@ module.exports.deletePhoto = (data) => {
       console.log(err);
     });
 };
+
 
 
