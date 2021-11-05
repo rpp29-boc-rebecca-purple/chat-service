@@ -50,6 +50,7 @@ module.exports = {
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
         } else if (response === 'noID') {
+          console.log('right here');
           res.status(400).send('Submitted MessageID does not exist');
         } else {
           res.status(200).send(response.rows);
@@ -127,6 +128,20 @@ module.exports = {
       .catch((err) => {
         console.log(err);
         res.status(400).send(err);
+      });
+  },
+
+  downloadPhoto: (req, res) => {
+    if (!req.query.url) {
+      res.status(400).send('MISSING INPUT - url is required');
+    }
+    return helpers.downloadPhoto(req.query.url)
+      .then((response) => {
+        res.status(200).send(response);
+      })
+      .catch((err) => {
+        res.status(400).send('UNABLE TO DOWNLOAD PHOTO - try again later');
+        console.log(err);
       });
   }
 };

@@ -53,8 +53,8 @@ describe ('POST /new-conversation', () => {
 
   it('should create a new conversation for the submitted users', async () => {
     const response = await request.post('/new-conversation').send({
-      senderId: 11,
-      userId2: 22,
+      senderId: 1,
+      userId2: 9,
       body: 'this is a test'
     });
     expect(response.status).toBe(200);
@@ -62,8 +62,8 @@ describe ('POST /new-conversation', () => {
 
   it('should respond with conversation data for existing conversations', async () => {
     const response = await request.post('/new-conversation').send({
-      senderId: 11,
-      userId2: 22,
+      senderId: 1,
+      userId2: 9,
       body: 'this is a test'
     });
     expect(response.status).toBe(200);
@@ -93,9 +93,9 @@ describe ('POST /add-message', () => {
 
   it('should add a message to an existing conversation between two users', async () => {
     const response = await request.post('/add-message').send({
-      senderId: 11,
-      chatId: 22,
-      body: 'this is a test'
+      senderId: 9,
+      chatId: 19,
+      body: 'you are testing again!?'
     });
     expect(response.status).toBe(200);
   });
@@ -111,17 +111,19 @@ describe ('POST /add-message', () => {
 
 describe ('POST /delete-photo', () => {
 
-  const addMessage = async () => {
-    const response = await request.post('/add-message').send({
-      senderId: 1,
-      chatId: 12,
-      body: 'this is a test'
-    });
-    return response.body[0].messageid;
-  };
-
   it('should respond with a status of 200 after a message is successfully deleted', async () => {
+    const addMessage = async () => {
+      const response = await request.post('/add-message').send({
+        senderId: 1,
+        chatId: 19,
+        body: 'this is should be deleted'
+      });
+      return response.body[0].messageid;
+    };
+
     let addedMessage = await addMessage();
+
+    console.log(addedMessage);
 
     const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}`);
     expect(response.status).toBe(200);
