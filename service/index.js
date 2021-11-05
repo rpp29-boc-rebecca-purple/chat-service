@@ -115,23 +115,33 @@ module.exports.addMessage = (data) => {
 };
 
 module.exports.deletePhoto = (data) => {
-  console.log('delete is here', data.messageId);
   const query = 'DELETE FROM conversation WHERE messageId=$1;';
   const values = [data.messageId];
   return pool.query(query, values)
     .then((response) => {
-      console.log(response);
       if (response.rowCount === 0) {
         return 'noID';
       }
-      const query2 = 'SELECT * FROM conversation WHERE chatId=$1;';
-      const values2 = [data.chatId];
-      return pool.query(query2, values2);
+      return response;
     })
     .catch((err) => {
       console.log(err);
     });
 };
+
+module.exports.getAfterDelete = (chatId) => {
+  const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+  const values = [chatId];
+  return pool.query(query, values)
+    .then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+
 
 
 
