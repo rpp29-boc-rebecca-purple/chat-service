@@ -46,7 +46,7 @@ module.exports = {
         accessKeyId: process.env.AWSKEY,
         secretAccessKey: process.env.AWSSECRET
       });
-      let fileName = url.slice(37);
+      let fileName = url.slice(47);
       const params = {
         Bucket: 'croutonchat',
         Key: fileName
