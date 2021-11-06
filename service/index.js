@@ -22,7 +22,6 @@ module.exports.getConversation = (data) => {
   const values = [data.chatId, data.senderId];
   return pool.query(query, values)
     .then((response) => {
-      console.log('firstres', response);
       if (response.rowCount > 0) {
         query2 = 'UPDATE chatlist SET unread=0 WHERE chatId=$1;';
         values2 = [data.chatId];
@@ -34,7 +33,6 @@ module.exports.getConversation = (data) => {
       return pool.query(query2, values2);
     })
     .then((response) => {
-      console.log('final res', response);
       if (noUpdates === true) {
         return response.rows;
       } else {

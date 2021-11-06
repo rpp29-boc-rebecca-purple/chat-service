@@ -29,7 +29,6 @@ module.exports = {
     }
     return db.getConversation(req.query)
       .then((response) => {
-        console.log('outerres', response);
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
         } else if (Array.isArray(response)) {
