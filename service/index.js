@@ -16,19 +16,32 @@ module.exports.getChatList = (userId) => {
     });
 };
 
-module.exports.getConversation = (chatId) => {
-  const query = 'UPDATE conversation SET read=true WHERE chatId=$1 AND read=false;';
-  const values = [chatId];
+module.exports.getConversation = (data) => {
+  let query2, values2, noUpdates;
+  const query = 'UPDATE conversation SET read=true WHERE chatId=$1 AND read=false AND senderId!=$2;';
+  const values = [data.chatId, data.senderId];
   return pool.query(query, values)
     .then((response) => {
-      const query2 = 'UPDATE chatlist SET unread=0 WHERE chatId=$1 RETURNING *;';
-      const values2 = [chatId];
+      console.log('firstres', response);
+      if (response.rowCount > 0) {
+        query2 = 'UPDATE chatlist SET unread=0 WHERE chatId=$1;';
+        values2 = [data.chatId];
+      } else {
+        query2 = 'SELECT * FROM conversation WHERE chatId=$1;';
+        values2 = [data.chatId];
+        noUpdates = true;
+      }
       return pool.query(query2, values2);
     })
     .then((response) => {
-      const query3 = 'SELECT * FROM conversation WHERE chatId=$1;';
-      const values3 = [chatId];
-      return pool.query(query3, values3);
+      console.log('final res', response);
+      if (noUpdates === true) {
+        return response.rows;
+      } else {
+        const query3 = 'SELECT * FROM conversation WHERE chatId=$1;';
+        const values3 = [data.chatId];
+        return pool.query(query3, values3);
+      }
     })
     .catch((err) => {
       console.log(err);
