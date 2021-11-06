@@ -6,7 +6,7 @@ const request = supertest(app);
 describe ('GET /conversation', () => {
 
   it('should respond with conversation data for valid chatId', async () => {
-    const response = await request.get('/conversation?chatId=12');
+    const response = await request.get('/conversation?chatId=19&senderId=1');
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
   });
@@ -20,7 +20,7 @@ describe ('GET /conversation', () => {
   it('should respond with a 400 status code for a missing chatId', async () => {
     const response = await request.get('/conversation');
     expect(response.status).toBe(400);
-    expect(response.text).toBe('QUERY PARAM "chatId" IS REQUIRED');
+    expect(response.text).toBe('QUERY PARAM "chatId" and "senderId" ARE REQUIRED');
   });
 
 });

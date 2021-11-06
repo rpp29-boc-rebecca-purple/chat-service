@@ -23,14 +23,16 @@ module.exports = {
   },
 
   getConversation: (req, res) => {
-    if (!req.query.chatId) {
-      res.status(400).send('QUERY PARAM "chatId" IS REQUIRED');
+    if (!req.query.chatId || !req.query.senderId) {
+      res.status(400).send('QUERY PARAM "chatId" and "senderId" ARE REQUIRED');
       return;
     }
-    return db.getConversation(req.query.chatId)
+    return db.getConversation(req.query)
       .then((response) => {
         if (!response || response.rowCount === 0) {
           res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
+        } else if (Array.isArray(response)) {
+          res.status(200).send(response);
         } else {
           res.status(200).send(response.rows);
         }
