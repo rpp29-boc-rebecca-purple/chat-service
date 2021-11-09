@@ -127,6 +127,7 @@ module.exports = {
       chatId: req.body.chatId,
       senderId: req.body.senderId
     };
+    console.log('here is file', req);
     return helpers.storePhoto(req)
       .then((photoData) => {
         data.photoURL = photoData.Location;

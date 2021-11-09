@@ -1,6 +1,7 @@
 const app = require('./server/server.js');
 const supertest = require('supertest');
 const request = supertest(app);
+jest.setTimeout(15000);
 
 
 describe ('GET /conversation', () => {
@@ -109,23 +110,23 @@ describe ('POST /add-message', () => {
 });
 
 
-xdescribe ('POST /delete-photo', () => {
+describe ('POST /delete-photo', () => {
 
-  it('should respond with a status of 200 after a message is successfully deleted', async () => {
+  xit('should respond with a status of 200 after a message is successfully deleted', async () => {
     const addMessage = async () => {
-      const addMessageResponse = await request.post('/add-message').send({
+      let file = `${__dirname}/service/utils/images.jpg`;
+      const addMessageResponse = await request.post('/add-photo').send({
         senderId: 1,
         chatId: 19,
-        body: 'this is should be deleted'
+        url: `${__dirname}/service/utils/images.jpg`
       });
-      return addMessageResponse.body[0].messageid;
+      return addMessageResponse;
     };
 
     let addedMessage = await addMessage();
 
-    console.log(addedMessage);
 
-    const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}`);
+    // const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage.messageId}&url=${addedMessage.photoUrl}`);
     expect(response.status).toBe(200);
   });
 
@@ -136,11 +137,18 @@ xdescribe ('POST /delete-photo', () => {
   });
 
   it('should respond with a status of 400 for invalid messageIds', async () => {
+    jest.setTimeout(15000);
     let addedMessage = 99999999;
 
-    const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}`);
+    const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}&url=test@test.jpg`);
     expect(response.status).toBe(400);
     expect(response.text).toBe('Submitted MessageID does not exist');
   });
+
+});
+
+describe ('add and delete images from database', () => {
+
+
 
 });
