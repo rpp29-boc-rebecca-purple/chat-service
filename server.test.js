@@ -1,6 +1,7 @@
 const app = require('./server/server.js');
 const supertest = require('supertest');
 const request = supertest(app);
+const dbQueries = require('./service/index.js');
 jest.setTimeout(15000);
 
 
@@ -112,24 +113,6 @@ describe ('POST /add-message', () => {
 
 describe ('POST /delete-photo', () => {
 
-  xit('should respond with a status of 200 after a message is successfully deleted', async () => {
-    const addMessage = async () => {
-      let file = `${__dirname}/service/utils/images.jpg`;
-      const addMessageResponse = await request.post('/add-photo').send({
-        senderId: 1,
-        chatId: 19,
-        url: `${__dirname}/service/utils/images.jpg`
-      });
-      return addMessageResponse;
-    };
-
-    let addedMessage = await addMessage();
-
-
-    // const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage.messageId}&url=${addedMessage.photoUrl}`);
-    expect(response.status).toBe(200);
-  });
-
   it('should respond with a status of 400 for missing paramters', async () => {
     const response = await request.delete('/delete-photo');
     expect(response.status).toBe(400);
@@ -137,7 +120,6 @@ describe ('POST /delete-photo', () => {
   });
 
   it('should respond with a status of 400 for invalid messageIds', async () => {
-    jest.setTimeout(15000);
     let addedMessage = 99999999;
 
     const response = await request.delete(`/delete-photo?chatId=12&messageId=${addedMessage}&url=test@test.jpg`);
@@ -147,8 +129,20 @@ describe ('POST /delete-photo', () => {
 
 });
 
-describe ('add and delete images from database', () => {
-
-
-
+describe ('DB queries (delete and add)', () => {
+  it ('should return successfully for adding and deleting photos', async () => {
+    const data = {
+      chatId: 12,
+      senderId: 1,
+      photoURL: 'thisIsATest.jpg'
+    };
+    const response = await dbQueries.addPhoto(data);
+    let messageIdNum = response.rows[response.rows.length - 1].messageid;
+    console.log('what in the', messageIdNum);
+    const dataToBeDeleted = {
+      messageId: messageIdNum
+    };
+    const deleteResponse = await dbQueries.deletePhoto(dataToBeDeleted);
+    expect(deleteResponse.rowCount).toBe(1);
+  });
 });

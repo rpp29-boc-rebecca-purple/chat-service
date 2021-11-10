@@ -34,7 +34,7 @@ module.exports.getConversation = (data) => {
     })
     .then((response) => {
       if (noUpdates === true) {
-        return response.rows;
+        return response;
       } else {
         const query3 = 'SELECT * FROM conversation WHERE chatId=$1;';
         const values3 = [data.chatId];
@@ -132,6 +132,8 @@ module.exports.deletePhoto = (data) => {
     .then((response) => {
       if (response.rowCount === 0) {
         return 'noID';
+      } else {
+        return response;
       }
     })
     .catch((err) => {
