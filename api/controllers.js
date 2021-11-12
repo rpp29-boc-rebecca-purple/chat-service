@@ -30,9 +30,7 @@ module.exports = {
     return db.getConversation(req.query)
       .then((response) => {
         if (!response || response.rowCount === 0) {
-          res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
-        } else if (Array.isArray(response)) {
-          res.status(200).send(response);
+          res.status(400).send('UNABLE TO GET CONVERSATION - does not exist');
         } else {
           res.status(200).send(response.rows);
         }
@@ -47,25 +45,42 @@ module.exports = {
       res.status(400).send('QUERY PARAM "chatId", "messageId", and "url" ARE REQUIRED');
       return;
     }
+    const status = {
+      noId: false,
+      nothingToDelete: false
+    };
     setTimeout(() => {
       return db.deletePhoto(req.query)
         .then((response) => {
-          if (!response || response.rowCount === 0) {
-            res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
-          } else if (response === 'noID') {
-            res.status(400).send('Submitted MessageID does not exist');
+          if (response === 'noID') {
+            status.noId = true;
+            return null;
+          } else if (!response || response.rowCount === 0) {
+            status.nothingToDelete = true;
+            return null;
           } else {
             return helpers.deletePhoto(req.query.url);
           }
         })
         .then((deleted) => {
-          return db.getAfterDelete(req.query.chatId);
+          if (!deleted) {
+            return null;
+          } else {
+            return db.getAfterDelete(req.query.chatId);
+          }
         })
         .then((finalResponse) => {
-          res.status(200).send(finalResponse.rows);
+          if (!finalResponse && status.nothingToDelete) {
+            res.status(400).send('UNABLE TO GET CONVERSATION - try again later');
+          } else if (!finalResponse && status.noId) {
+            res.status(400).send('Submitted MessageID does not exist');
+          } else {
+            res.status(200).send(finalResponse.rows);
+          }
         })
         .catch((err) => {
-          res.status(400).send('UNABLE TO DELETE PHOTO - try again later');
+          console.log(err);
+          return res.status(400).send('UNABLE TO DELETE PHOTO - try again later');
         });
     }, 5000);
 

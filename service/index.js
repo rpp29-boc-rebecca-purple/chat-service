@@ -34,7 +34,7 @@ module.exports.getConversation = (data) => {
     })
     .then((response) => {
       if (noUpdates === true) {
-        return response.rows;
+        return response;
       } else {
         const query3 = 'SELECT * FROM conversation WHERE chatId=$1;';
         const values3 = [data.chatId];
@@ -132,8 +132,9 @@ module.exports.deletePhoto = (data) => {
     .then((response) => {
       if (response.rowCount === 0) {
         return 'noID';
+      } else {
+        return response;
       }
-      return response;
     })
     .catch((err) => {
       console.log(err);
@@ -141,11 +142,13 @@ module.exports.deletePhoto = (data) => {
 };
 
 module.exports.getAfterDelete = (chatId) => {
-  const query = 'SELECT * FROM conversation WHERE chatId=$1;';
+  const query = 'UPDATE chatlist SET unreadphoto=false WHERE chatId=$1';
   const values = [chatId];
   return pool.query(query, values)
     .then((response) => {
-      return response;
+      const query2 = 'SELECT * FROM conversation WHERE chatId=$1;';
+      const values2 = [chatId];
+      return pool.query(query2, values2);
     })
     .catch((err) => {
       console.log(err);
